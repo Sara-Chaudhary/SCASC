@@ -1,11 +1,15 @@
 from sqlalchemy import create_engine ,Column ,String ,Boolean ,Integer 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
 
 
 # DATABASE SETUP
 
-DATABASE_URL = 'postgresql://postgres:Test123@localhost/Project1' 
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable not set. Please create a .env file or export the variable.")
+
 engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(autocommit=False , autoflush=False, bind = engine)
 Base = declarative_base()
