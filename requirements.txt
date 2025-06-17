@@ -24,6 +24,6 @@ sentence_transformers
 SQLAlchemy
 torch
 transformers
-uvicorn
+uvicorn[standard]
 redis
 celery
