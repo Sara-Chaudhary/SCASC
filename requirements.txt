@@ -25,3 +25,5 @@ SQLAlchemy
 torch
 transformers
 uvicorn
+redis
+celery
