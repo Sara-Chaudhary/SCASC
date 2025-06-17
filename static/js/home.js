@@ -130,7 +130,7 @@ function renderChat() {
 
 
 document.getElementById("getAllVectors").addEventListener("click", async () => {
-    const response = await fetch('/admin/get_vector', {
+    const response = await fetch('/admin/get_vector/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
