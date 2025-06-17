@@ -26,9 +26,9 @@ async def render_home_page(user:user_dependency,request:Request):
     if user is None:
         raise HTTPException(status_code=401, detail='Authentication Failed')
     if user['role'] == 'admin':
-        return RedirectResponse(url="/admin/", status_code=200)
+        return RedirectResponse(url="/admin/", status_code=302)
     else:
-        return RedirectResponse(url="/home/user", status_code=200)
+        return RedirectResponse(url="/home/user", status_code=302)
     
 @router.get("/user")
 async def user_home(request: Request):
