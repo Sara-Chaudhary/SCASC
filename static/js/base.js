@@ -13,7 +13,7 @@ if (loginForm) {
         }
 
         try {
-            const response = await fetch('/auth/token/', {
+            const response = await fetch('/auth/token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -67,7 +67,7 @@ if (registerForm) {
         };
 
         try {
-            const response = await fetch('/auth', {
+            const response = await fetch('/auth/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
