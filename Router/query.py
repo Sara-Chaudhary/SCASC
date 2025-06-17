@@ -24,7 +24,7 @@ user_dependency=Annotated[dict,Depends(get_current_user)]
 
 # Initialize Embedding model
 embedding = HuggingFaceEmbeddings(
-    model_name="BAAI/bge-large-en",
+    model_name="BAAI/bge-small-en-v1.5",
     model_kwargs={"device": "cpu"},
     encode_kwargs={"normalize_embeddings": True}
 )
