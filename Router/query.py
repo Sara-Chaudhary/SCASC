@@ -118,10 +118,10 @@ async def rag_chat(user :user_dependency ,request: QueryRequest):
         response = llm.invoke(prompt)
         answer = response.content
 
-        # Log chunks to console
-        print("\n=== Retrieved Chunks ===")
-        for i, chunk in enumerate(retrieved_chunks, 1):
-            print(f"\nChunk {i}:\n{chunk}\n")
+        # # Log chunks to console
+        # print("\n=== Retrieved Chunks ===")
+        # for i, chunk in enumerate(retrieved_chunks, 1):
+        #     print(f"\nChunk {i}:\n{chunk}\n")
 
         # Save to chat history
         chat_history.append(f"You: {user_input}")
