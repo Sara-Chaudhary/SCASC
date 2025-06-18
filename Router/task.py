@@ -24,7 +24,7 @@ def make_qdrant(self, file_path: str):
         qdrant = Qdrant.from_documents(
             documents,
             embedding,
-            url="http://localhost:6333",
+            url="http://qdrant:6333",
             prefer_grpc=False,
             collection_name="db1"
         )
