@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request ,Response
 from pydantic import BaseModel, Field
 from databse import sessionLocal, Users
 from sqlalchemy.orm import Session
@@ -7,8 +7,8 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates 
+from fastapi.responses import JSONResponse ,RedirectResponse
 from fastapi.security.utils import get_authorization_scheme_param
 
 
@@ -186,3 +186,9 @@ async def login_for_access_token(
 
         traceback.print_exc()  # for terminal logs
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+    
+@router.get("/logout")
+async def logout(response: Response):
+    response = RedirectResponse(url="/auth/login-page", status_code=status.HTTP_302_FOUND)
+    response.delete_cookie(key="access_token")
+    return response
