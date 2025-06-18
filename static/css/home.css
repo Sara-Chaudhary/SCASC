@@ -1,0 +1,13 @@
+.thinking-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 1.2em;
+    background-color: #333; 
+    animation: blink 1s step-end infinite;
+    vertical-align: bottom;
+}
+
+@keyframes blink {
+    from, to { background-color: transparent; }
+    50% { background-color: #333; } 
+}

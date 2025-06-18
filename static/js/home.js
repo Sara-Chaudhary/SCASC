@@ -82,21 +82,70 @@ async function checkTaskStatus(taskId) {
 // Handle Query Submit
 document.getElementById('queryForm').addEventListener('submit', async function (e) {
     e.preventDefault();
-    const userQuery = document.getElementById('queryInput').value;
-    const response = await fetch('/query/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ query: userQuery })
-    });
+    const queryInput = document.getElementById('queryInput');
+    const userQuery = queryInput.value;
 
-    const result = await response.json();
-    if (response.ok) {
-        fullChatHistory.push({ user: userQuery, bot: result.response });
-        renderChat();
-        document.getElementById('queryInput').value = '';
-    } else {
-        alert(result.error || result.detail || 'Query failed.');
+    if (!userQuery.trim()) {
+        return; 
+    }
+
+    fullChatHistory.push({ user: userQuery, bot: "" });
+    renderChat();
+
+    const allBotMessages = document.querySelectorAll('.chat-entry.bot');
+    const lastBotMessageDiv = allBotMessages[allBotMessages.length - 1];
+
+    if (lastBotMessageDiv) {
+        lastBotMessageDiv.innerHTML = '<span class="thinking-indicator"></span>'; 
+    }
+
+    try {
+        const response = await fetch('/query/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ query: userQuery })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Server returned an error');
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let botResponseText = ""; 
+        if (lastBotMessageDiv) {
+            lastBotMessageDiv.innerHTML = "";
+        }
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+
+            const chunk = decoder.decode(value, { stream: true });
+            botResponseText += chunk; 
+            
+            if (lastBotMessageDiv) {
+                lastBotMessageDiv.innerHTML += chunk.replace(/\n/g, '<br>'); 
+            }
+        }
+
+        if (fullChatHistory.length > 0) {
+            fullChatHistory[fullChatHistory.length - 1].bot = botResponseText;
+        }
+
+    } catch (error) {
+        console.error('Query failed:', error);
+        if (lastBotMessageDiv) {
+            lastBotMessageDiv.textContent = `Error: ${error.message}`;
+        } else {
+            alert(`Query failed: ${error.message}`);
+        }
+    } finally {
+        queryInput.value = '';
     }
 });
 
