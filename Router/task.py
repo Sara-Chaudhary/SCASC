@@ -13,6 +13,8 @@ load_dotenv()
 @celery.task(bind=True)
 def make_qdrant(self, file_path: str):
     try:
+        QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+
         parser = LlamaParse()
         document = parser.load_data(file_path)
         all_text = "\n".join(doc.text for doc in document)
@@ -24,7 +26,7 @@ def make_qdrant(self, file_path: str):
         qdrant = Qdrant.from_documents(
             documents,
             embedding,
-            url="http://qdrant:6333",
+            url=QDRANT_URL,
             prefer_grpc=False,
             collection_name="db1"
         )
