@@ -16,6 +16,8 @@ import torch.nn.functional as F
 # Load env vars
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+
 
 router = APIRouter(prefix='/query',tags=['query'])
 
@@ -31,7 +33,7 @@ embedding = HuggingFaceEmbeddings(
 
 # Connect to Qdrant
 client = QdrantClient(
-    url="http://localhost:6333",
+    url=QDRANT_URL,
     prefer_grpc=False
 )
 collection_name = "db1"
