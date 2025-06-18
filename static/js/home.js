@@ -128,54 +128,62 @@ function renderChat() {
     }
 }
 
+const getAllVectorsBtn = document.getElementById('getAllVectors');
+if (getAllVectorsBtn) { 
+    getAllVectorsBtn.addEventListener('click', async () => {
+        const response = await fetch('/admin/get_vector/', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        });
+        const data = await response.json();
+        const vectorCountDiv = document.getElementById("vectorCount");
 
-document.getElementById("getAllVectors").addEventListener("click", async () => {
-    const response = await fetch('/admin/get_vector/', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-    }); 
-    const data = await response.json();
-    const vectorCountDiv = document.getElementById("vectorCount");
-
-    const vectorList = document.getElementById("vectorList");
-    vectorCountDiv.textContent = `Total Vectors: ${data.count}`;
-    vectorList.innerHTML = "";
-    data.ids.forEach(id => {
-        const div = document.createElement("div");
-        div.textContent = id;
-        vectorList.appendChild(div);
+        const vectorList = document.getElementById("vectorList");
+        vectorCountDiv.textContent = `Total Vectors: ${data.count}`;
+        vectorList.innerHTML = "";
+        data.ids.forEach(id => {
+            const div = document.createElement("div");
+            div.textContent = id;
+            vectorList.appendChild(div);
+        });
     });
-});
+}
 
-// Fetch Vector by ID
-document.getElementById("fetchVector").addEventListener("click", async () => {
-    const id = document.querySelector("input[name='vector_id']").value;
-    const response = await fetch(`/admin/get_vector_by_id/${id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-    });
-    const data = await response.text();
-    document.getElementById("vectorResult").textContent = data;
-});
-
-// Delete Vector by ID
-document.getElementById("deleteVector").addEventListener("click", async () => {
-    const id = document.querySelector("input[name='vector_id']").value;
-    const confirmed = confirm("Are you sure you want to delete this vector?");
-    if (!confirmed) return;
-
-    const response = await fetch(`/admin/delete_vector/${id}`, {
-        method: "DELETE",
-        credentials: 'include'
+const fetchVectorBtn = document.getElementById("fetchVector");
+if (fetchVectorBtn) {
+    fetchVectorBtn.addEventListener('click', async () => {
+        const id = document.querySelector("input[name='vector_id']").value;
+        const response = await fetch(`/admin/get_vector_by_id/${id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        });
+        const data = await response.text();
+        document.getElementById("vectorResult").textContent = data;
     });
 
-    if (response.status === 204) {
-        alert("Vector deleted successfully.");
-        document.getElementById("vectorResult").textContent = "";
-    } else {
-        const msg = await response.text();
-        alert("Error: " + msg);
-    }
-});
+}
+
+const deleteVectorBtn = document.getElementById("deleteVector");
+if(deleteVectorBtn){
+    deleteVectorBtn.addEventListener('click', async () => {
+        const id = document.querySelector("input[name='vector_id']").value;
+        const confirmed = confirm("Are you sure you want to delete this vector?");
+        if (!confirmed) return;
+
+        const response = await fetch(`/admin/delete_vector/${id}`, {
+            method: "DELETE",
+            credentials: 'include'
+        });
+
+        if (response.status === 204) {
+            alert("Vector deleted successfully.");
+            document.getElementById("vectorResult").textContent = "";
+        } else {
+            const msg = await response.text();
+            alert("Error: " + msg);
+        }
+
+    });
+}
