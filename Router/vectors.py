@@ -1,18 +1,13 @@
 from fastapi import APIRouter ,Depends ,HTTPException ,status ,Path ,Request
 from qdrant_client.http import models
-from qdrant_client import QdrantClient
 from .auth import get_current_user
+from .query import client
 from typing import Annotated
 from fastapi.templating import Jinja2Templates
 
 
 router = APIRouter(prefix='/admin' , tags=['admin'])
 templates = Jinja2Templates(directory="templates")
-
-client = QdrantClient(
-    url="http://localhost:6333"
-)
-
 collection_name = "db1"
 user_dependency=Annotated[dict,Depends(get_current_user)]
 

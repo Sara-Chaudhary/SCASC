@@ -8,39 +8,12 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/bootstrap.css') }}">
-    <style>
-        #statusMessage.pending {
-            color: orange;
-        }
-
-        #statusMessage.success {
-            color: green;
-        }
-
-        .chat-box {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .chat-entry {
-            margin-bottom: 8px;
-        }
-
-        .chat-entry.user {
-            font-weight: bold;
-        }
-
-        .chat-entry.bot {
-            color: #0d6efd;
-        }
-    </style>
 </head>
 
 <body>
-    <nav class="navbar ...">
-        <div class="ml-auto">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand font-weight-bold" href="#">USER DASHBOARD</a>
             <form action="/auth/logout" method="get">
                 <button type="submit" class="btn btn-outline-danger">Logout</button>
             </form>

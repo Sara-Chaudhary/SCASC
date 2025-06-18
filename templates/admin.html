@@ -8,38 +8,18 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/bootstrap.css') }}">
     <title>Admin Dashboard</title>
-    <style>
-        .chat-box {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .chat-entry {
-            margin-bottom: 8px;
-        }
-
-        .chat-entry.user {
-            font-weight: bold;
-        }
-
-        .chat-entry.bot {
-            color: #0d6efd;
-        }
-    </style>
 </head>
 
 <body>
-    <nav class="navbar ...">
-        <div class="ml-auto">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand font-weight-bold" href="#">SCASC ADMIN DASHBOARD</a>
             <form action="/auth/logout" method="get">
                 <button type="submit" class="btn btn-outline-danger">Logout</button>
             </form>
         </div>
     </nav>
     <div class="container-fluid mt-2 mb-4 px-5">
-        <H1 class="text-center">ADMIN DASHBOARD</H1>
         <div class="row mt-3">
             <!-- Left Half -->
             <div class="col-md-6">
@@ -79,9 +59,10 @@
                             <button type="button" id="clearChatBtn" class="btn btn-danger mt-2 ml-2">Clear Chat</button>
                         </form>
 
-                        <div class="mt-4 chat-box" id="chatHistoryBox">
+                        <div class="mt-4">
                             <h5>Chat History</h5>
-                            <div id="chatHistory" style="max-height: 300px; overflow-y: auto; font-size: 0.9rem;"></div>
+                            <div class="chat-history-container" id="chatHistory">
+                            </div>
                         </div>
                     </div>
                 </div>
