@@ -1,5 +1,0 @@
-langchain
-torch
-sentence_transformers
-pypdf
-qdrant-client
