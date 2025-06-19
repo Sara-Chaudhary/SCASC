@@ -5,16 +5,26 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse , JSONResponse
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware 
+
 
 app = FastAPI()
 
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
+origins = [
+    "https://scasc.duckdns.org", 
+    "http://localhost:3000", 
+]
+
 app.add_middleware(
-  CORSMiddleware,
-  allow_origins = ["*"],
-  allow_methods = ["*"],
-  allow_headers = ["*"],
-  allow_credentials=True
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 Base.metadata.create_all(engine)
 
