@@ -7,7 +7,6 @@ body {
 
 #chatHistory {
     display: flex;
-    flex-direction: column-reverse; /* This flips the order! */
     overflow-y: auto;
     max-height: 300px; /* Or whatever height you prefer */
 }
@@ -32,7 +31,6 @@ body {
 .chat-history-container {
     height: 400px; 
     display: flex;
-    flex-direction: column-reverse; 
     overflow-y: auto;
     padding: 15px;
     background-color: #ffffff;
