@@ -32,8 +32,11 @@ services:
 
   app:
     build: .
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    command: ["./wait-and-run.sh", "15", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports: 
+      - "8000:8000"
     volumes:
+      - ./wait-and-run.sh:/app/wait-and-run.sh 
       - shared_files:/app/shared
       - static_volume:/app/static
     environment:
@@ -43,15 +46,16 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - LLAMA_CLOUD_API_KEY=${LLAMA_CLOUD_API_KEY}
     depends_on:
-      db: { condition: service_healthy }
-      redis: { condition: service_healthy }
-      qdrant:
+      - db
+      - redis
+      - qdrant
     restart: unless-stopped
 
   worker:
     build: .
-    command: celery -A celery_app.celery worker --loglevel=info
+    command: ["./wait-and-run.sh", "15", "celery", "-A", "celery_app.celery", "worker", "--loglevel=info"]
     volumes:
+      - ./wait-and-run.sh:/app/wait-and-run.sh 
       - shared_files:/app/shared
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
@@ -60,9 +64,9 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - LLAMA_CLOUD_API_KEY=${LLAMA_CLOUD_API_KEY}
     depends_on:
-      db: { condition: service_healthy }
-      redis: { condition: service_healthy }
-      qdrant:
+      - db
+      - redis
+      - qdrant
     restart: unless-stopped
 
   # nginx:
