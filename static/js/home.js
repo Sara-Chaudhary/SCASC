@@ -79,25 +79,16 @@ async function checkTaskStatus(taskId) {
 }
 
 
-// Handle Query Submit
 document.getElementById('queryForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const queryInput = document.getElementById('queryInput');
-    const userQuery = queryInput.value;
+    const userQuery = queryInput.value.trim();
 
-    if (!userQuery.trim()) {
-        return; 
-    }
+    if (!userQuery) return;
 
-    fullChatHistory.push({ user: userQuery, bot: "" });
-    renderChat();
-
-    const allBotMessages = document.querySelectorAll('.chat-entry.bot');
-    const lastBotMessageDiv = allBotMessages[allBotMessages.length - 1];
-
-    if (lastBotMessageDiv) {
-        lastBotMessageDiv.innerHTML = '<span class="thinking-indicator"></span>'; 
-    }
+    fullChatHistory.push({ user: userQuery, bot: '<span class="thinking-indicator"></span>' });
+    renderChat(); 
+    queryInput.value = ''; 
 
     try {
         const response = await fetch('/query/ask', {
@@ -114,38 +105,26 @@ document.getElementById('queryForm').addEventListener('submit', async function (
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        let botResponseText = ""; 
-        if (lastBotMessageDiv) {
-            lastBotMessageDiv.innerHTML = "";
-        }
+        let botResponseText = "";
 
         while (true) {
             const { done, value } = await reader.read();
-            if (done) {
-                break;
-            }
-
-            const chunk = decoder.decode(value, { stream: true });
-            botResponseText += chunk; 
+            if (done) break;
+            botResponseText += decoder.decode(value, { stream: true });
             
-            if (lastBotMessageDiv) {
-                lastBotMessageDiv.innerHTML += chunk.replace(/\n/g, '<br>'); 
+            const thinkingIndicator = document.querySelector('.thinking-indicator');
+            if (thinkingIndicator) {
+                thinkingIndicator.parentElement.innerHTML = botResponseText.replace(/\n/g, '<br>');
             }
         }
 
-        if (fullChatHistory.length > 0) {
-            fullChatHistory[fullChatHistory.length - 1].bot = botResponseText;
-        }
+        fullChatHistory[fullChatHistory.length - 1].bot = botResponseText;
+        renderChat();
 
     } catch (error) {
         console.error('Query failed:', error);
-        if (lastBotMessageDiv) {
-            lastBotMessageDiv.textContent = `Error: ${error.message}`;
-        } else {
-            alert(`Query failed: ${error.message}`);
-        }
-    } finally {
-        queryInput.value = '';
+        fullChatHistory[fullChatHistory.length - 1].bot = `Error: ${error.message}`;
+        renderChat();
     }
 });
 
@@ -167,31 +146,20 @@ document.getElementById('clearChatBtn').addEventListener('click', async function
 
 function renderChat() {
     const chatHistoryDiv = document.getElementById('chatHistory');
-    chatHistoryDiv.innerHTML = ''; // Clear the existing chat to prevent duplicates
+    chatHistoryDiv.innerHTML = ''; 
 
-    fullChatHistory.forEach(item => {
-        const userDiv = document.createElement('div');
-        userDiv.className = 'chat-entry user';
-        
-        const userMessage = document.createElement('div');
-        userMessage.className = 'message';
-        userMessage.textContent = item.user; // Use textContent for security
-        userDiv.appendChild(userMessage);
-
-        if (item.bot || item.bot === "") { // Also handle the empty placeholder case
+    for (const item of fullChatHistory) {
+        if (item.bot) {
             const botDiv = document.createElement('div');
             botDiv.className = 'chat-entry bot';
-            
-            const botMessage = document.createElement('div');
-            botMessage.className = 'message';
-            botMessage.innerHTML = item.bot.replace(/\n/g, '<br>');
-            botDiv.appendChild(botMessage);
-            
-            chatHistoryDiv.prepend(botDiv); 
+            botDiv.innerHTML = `<div class="message">${item.bot.replace(/\n/g, '<br>')}</div>`;
+            chatHistoryDiv.prepend(botDiv);
         }
-
+        const userDiv = document.createElement('div');
+        userDiv.className = 'chat-entry user';
+        userDiv.innerHTML = `<div class="message">${item.user}</div>`;
         chatHistoryDiv.prepend(userDiv);
-    });
+    }
 }
 
 const getAllVectorsBtn = document.getElementById('getAllVectors');
