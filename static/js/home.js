@@ -165,16 +165,33 @@ document.getElementById('clearChatBtn').addEventListener('click', async function
     }
 });
 
-// Render Chat UI
 function renderChat() {
-    const chatBox = document.getElementById('chatHistory');
-    chatBox.innerHTML = '';
-    for (const item of fullChatHistory) {
-        chatBox.innerHTML += `
-                    <div class="chat-entry user">You: ${item.user}</div>
-                    <div class="chat-entry bot">Bot: ${item.bot}</div>
-                `;
-    }
+    const chatHistoryDiv = document.getElementById('chatHistory');
+    chatHistoryDiv.innerHTML = ''; // Clear the existing chat to prevent duplicates
+
+    fullChatHistory.forEach(item => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'chat-entry user';
+        
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message';
+        userMessage.textContent = item.user; // Use textContent for security
+        userDiv.appendChild(userMessage);
+
+        if (item.bot || item.bot === "") { // Also handle the empty placeholder case
+            const botDiv = document.createElement('div');
+            botDiv.className = 'chat-entry bot';
+            
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message';
+            botMessage.innerHTML = item.bot.replace(/\n/g, '<br>');
+            botDiv.appendChild(botMessage);
+            
+            chatHistoryDiv.prepend(botDiv); 
+        }
+
+        chatHistoryDiv.prepend(userDiv);
+    });
 }
 
 const getAllVectorsBtn = document.getElementById('getAllVectors');
